@@ -57,7 +57,6 @@ if (message.content === `${prefix}github`) {
 .setTitle('Github ')
 .setURL('https://github.com/TheDetecitveFox/Foxy-Bot/blob/main/index.js')
 .setDescription('This Is The Main Git Hub You Will See All The Code There')
-.setFooter('It Will Be Not Private Soon');
     message.channel.send(gitembed);
 };
 // support embed
