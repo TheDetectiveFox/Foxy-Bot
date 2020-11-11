@@ -58,7 +58,7 @@ if (message.content === `${prefix}botupdates`) {
 .setTitle('Bot Updates')
 .addFields(
 { name: 'Last News', value: '\`Made Bot Work 24/7 ALWAYS ONLINE\`,\`Added Invite Command\`' })
-.setFooter('Last Updated 11/10/2020 10:42');
+.setFooter('Last Updated 11/11/2020');
     message.channel.send(upembed);
 };
 // github embed
