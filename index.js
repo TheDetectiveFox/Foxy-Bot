@@ -1,3 +1,14 @@
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { prefix, token } = require('./config.json');
@@ -27,7 +38,7 @@ if (message.content === `${prefix}ping`) {
 .setTitle('Bot Commands')
 .setDescription('For More About Any Command Type \`f!help (command name)\` BTW It Is Not Done Yet')
 .addFields(
-    { name: 'Commands', value: '\`f!ping\`,\`f!beep\`,\`f!about\`,\`f!github\`,\`f!botupdates\`,\`f!support\` ' })
+    { name: 'Commands', value: '\`f!ping\`,\`f!about\`,\`f!github\`,\`f!botupdates\`,\`f!support\`,\`f!invite\` ' })
 .setFooter('Writen By TheDetectiveFox#1633 Owner Of The Bot');
         message.channel.send(helpembed);
     };
@@ -46,7 +57,7 @@ if (message.content === `${prefix}botupdates`) {
 .setColor('#1229ff')
 .setTitle('Bot Updates')
 .addFields(
-{ name: 'Last News', value: '\`Update 11/10/2020: Added Github Command, Added About Command, Added Support Command,Added Bot Activity,Updated The Ping Command And It Now Will Give You Your MS\`' })
+{ name: 'Last News', value: '\`Made Bot Work 24/7 ALWAYS ONLINE\`,\`Added Invite Command\`' })
 .setFooter('Last Updated 11/10/2020 10:42');
     message.channel.send(upembed);
 };
@@ -68,6 +79,16 @@ if (message.content === `${prefix}support`) {
 .setDescription('Discord Support Server Coming Soon You Can Meet Owner And Report Bugs Or Suggest Stuff In That Discord But For Now It Is Not Done')
 .setFooter('Join When You Need Help');
     message.channel.send(supembed);
+};
+// invite embed
+if (message.content === `${prefix}invite`) {
+    const addembed = new Discord.MessageEmbed()
+.setColor('#1229ff')
+.setTitle('Invite')
+.setURL('https://discord.com/api/oauth2/authorize?client_id=774901331482902528&permissions=387136&scope=bot')
+.setDescription('If You Want To Add My Bot There Is The Link')
+.setFooter('Pls Do It');
+    message.channel.send(addembed);
 };
 })});
 client.login(token);
