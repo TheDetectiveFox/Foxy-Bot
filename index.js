@@ -85,7 +85,7 @@ if (message.content === `${prefix}invite`) {
     const addembed = new Discord.MessageEmbed()
 .setColor('#1229ff')
 .setTitle('Invite')
-.setURL('https://discord.com/api/oauth2/authorize?client_id=774901331482902528&permissions=387136&scope=bot')
+.setURL('https://discord.com/api/oauth2/authorize?client_id=774901331482902528&permissions=8&scope=bot')
 .setDescription('If You Want To Add My Bot There Is The Link')
 .setFooter('Pls Do It');
     message.channel.send(addembed);
