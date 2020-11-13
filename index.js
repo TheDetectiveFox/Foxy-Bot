@@ -1,14 +1,3 @@
-const express = require('express')
-const app = express()
-const port = 3000
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { prefix, token } = require('./config.json');
@@ -17,8 +6,8 @@ client.once('ready', () => {
 });
 // bot activity
 client.on('ready', () => {
-    console.log(`${client.user.tag} is ready`);
-    client.user.setActivity('f!help FOR FREE', {type:"WATCHING"})
+ console.log(`${client.user.tag} is ready`);
+ client.user.setActivity(`f!help | in ${client.guilds.cache.size} servers`, {type:"WATCHING"})
 client.on('message', message => {
     console.log(message.content);
 // ping command
@@ -75,8 +64,8 @@ if (message.content === `${prefix}support`) {
     const supembed = new Discord.MessageEmbed()
 .setColor('#1229ff')
 .setTitle('Discord Support Server')
-.setURL('')
-.setDescription('Discord Support Server Coming Soon You Can Meet Owner And Report Bugs Or Suggest Stuff In That Discord But For Now It Is Not Done')
+.setURL('https://discord.gg/CsxpcqwKnt')
+.setDescription('Discord Support Server You Can Meet Owner And Report Bugs Or Suggest Stuff In That Discord!!')
 .setFooter('Join When You Need Help');
     message.channel.send(supembed);
 };
