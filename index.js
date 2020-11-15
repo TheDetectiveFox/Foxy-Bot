@@ -1,83 +1,89 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const { prefix, token } = require('./config.json');
+const fs = require('fs');
+client.commands = new Discord.Collection();
+const Commandsfiles = fs.readdirSync('./Commands/').filter(file => file.endsWith('.js'));
+for(const file of Commandsfiles){
+    const command = require(`./Commands/${file}`);
+    client.commands.set(command.name, command);
+fs.readdir(__dirname + "/commands/Help", (err, files) => {
+      if (err) return console.error(err);
+      files.forEach(file => {
+        if (!file.endsWith(".js")) return;
+        let props = require(`./commands/Help/${file}`);
+        let commandName = file.split(".")[0];
+        client.commands.set(commandName, props);
+        console.log("Loading Command: "+commandName)
+      });
+  }); 
+fs.readdir(__dirname + "/commands/Info", (err, files) => {
+      if (err) return console.error(err);
+      files.forEach(file => {
+        if (!file.endsWith(".js")) return;
+        let props = require(`./commands/Info/${file}`);
+        let commandName = file.split(".")[0];
+        client.commands.set(commandName, props);
+        console.log("Loading Command: "+commandName)
+      });
+  }); 
+fs.readdir(__dirname + "/commands/Moderation", (err, files) => {
+      if (err) return console.error(err);
+      files.forEach(file => {
+        if (!file.endsWith(".js")) return;
+        let props = require(`./commands/Moderation/${file}`);
+        let commandName = file.split(".")[0];
+        client.commands.set(commandName, props);
+        console.log("Loading Command: "+commandName)
+      });
+  }); 
+  fs.readdir(__dirname + "/commands/Utilities", (err, files) => {
+    if (err) return console.error(err);
+    files.forEach(file => {
+      if (!file.endsWith(".js")) return;
+      let props = require(`./commands/Utilities/${file}`);
+      let commandName = file.split(".")[0];
+      client.commands.set(commandName, props);
+      console.log("Loading Command: "+commandName)
+    });
+}); 
+fs.readdir(__dirname + "/commands/Games", (err, files) => {
+  if (err) return console.error(err);
+  files.forEach(file => {
+    if (!file.endsWith(".js")) return;
+    let props = require(`./commands/Games/${file}`);
+    let commandName = file.split(".")[0];
+    client.commands.set(commandName, props);
+    console.log("Loading Command: "+commandName)
+  });
+}); 
+fs.readdir(__dirname + "/commands/Economy", (err, files) => {
+  if (err) return console.error(err);
+  files.forEach(file => {
+    if (!file.endsWith(".js")) return;
+    let props = require(`./commands/Economy/${file}`);
+    let commandName = file.split(".")[0];
+    client.commands.set(commandName, props);
+    console.log("Loading Command: "+commandName)
+  });
+}); 
 client.once('ready', () => {
-    console.log('Ready!');
+    console.log('Bot Online Kiddo');
 });
 // bot activity
 client.on('ready', () => {
  console.log(`${client.user.tag} is ready`);
- client.user.setActivity(`f!help | in ${client.guilds.cache.size} servers`, {type:"WATCHING"})
+ setInterval(() => {
+  bot.user.setActivity(`f!help | in ${client.guilds.cache.size} servers.`, {type: 'WATCHING'});
+}, 60000);
+
+})
 client.on('message', message => {
-    console.log(message.content);
-// ping command
-if (message.content === `${prefix}ping`) {
-    message.channel.send('pinging...').then(pingMessage => {
-            
-        const start = message.createdTimestamp;
-        const end = pingMessage.createdTimestamp;
-        const subtraction = end - start;
-        
-        pingMessage.edit(` ${subtraction} ms.`)
-        })}
-// help command
-    if (message.content === `${prefix}help`) {
-        const helpembed = new Discord.MessageEmbed()
-.setColor('#0099ff')
-.setTitle('Bot Commands')
-.setDescription('For More About Any Command Type \`f!help (command name)\` BTW It Is Not Done Yet')
-.addFields(
-    { name: 'Commands', value: '\`f!ping\`,\`f!about\`,\`f!github\`,\`f!botupdates\`,\`f!support\`,\`f!invite\` ' })
-.setFooter('Writen By TheDetectiveFox#1633 Owner Of The Bot');
-        message.channel.send(helpembed);
-    };
-// The About Command
-if (message.content === `${prefix}about`) {
-    const aboutembed = new Discord.MessageEmbed()
-.setColor('#0432ff')
-.setTitle('About The Bot')
-.setDescription('This Bot Was Made By TheDetectiveFox#1633 This Bot Is Planned To Be A Leveling Economy Moderation Fun Bot ')
-.setFooter('Wirtten By Owner Of Bot');
-    message.channel.send(aboutembed);
-};
-// bot updates embed
-if (message.content === `${prefix}botupdates`) {
-    const upembed = new Discord.MessageEmbed()
-.setColor('#1229ff')
-.setTitle('Bot Updates')
-.addFields(
-{ name: 'Last News', value: '\`Made Bot Work 24/7 ALWAYS ONLINE\`,\`Added Invite Command\`' })
-.setFooter('Last Updated 11/11/2020');
-    message.channel.send(upembed);
-};
-// github embed
-if (message.content === `${prefix}github`) {
-    const gitembed = new Discord.MessageEmbed()
-.setColor('#1229ff')
-.setTitle('Github ')
-.setURL('https://github.com/TheDetecitveFox/Foxy-Bot/blob/main/index.js')
-.setDescription('This Is The Main Git Hub You Will See All The Code There')
-    message.channel.send(gitembed);
-};
-// support embed
-if (message.content === `${prefix}support`) {
-    const supembed = new Discord.MessageEmbed()
-.setColor('#1229ff')
-.setTitle('Discord Support Server')
-.setURL('https://discord.gg/CsxpcqwKnt')
-.setDescription('Discord Support Server You Can Meet Owner And Report Bugs Or Suggest Stuff In That Discord!!')
-.setFooter('Join When You Need Help');
-    message.channel.send(supembed);
-};
-// invite embed
-if (message.content === `${prefix}invite`) {
-    const addembed = new Discord.MessageEmbed()
-.setColor('#1229ff')
-.setTitle('Invite')
-.setURL('https://discord.com/api/oauth2/authorize?client_id=774901331482902528&permissions=8&scope=bot')
-.setDescription('If You Want To Add My Bot There Is The Link')
-.setFooter('Pls Do It');
-    message.channel.send(addembed);
-};
-})});
+    if (message.content.startsWith(prefix) || message.author.bot) return;
+    const args = message.content.slice(prefix.length).split(/ */)
+    const commandName = args.shift().toLowerCase();
+const command = client.commands.get(commandName);
+if(!command) return;
+command.execute(message, args);
+})};
 client.login(token);
