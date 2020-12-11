@@ -3,87 +3,44 @@ const client = new Discord.Client();
 const { prefix, token } = require('./config.json');
 const fs = require('fs');
 client.commands = new Discord.Collection();
-const Commandsfiles = fs.readdirSync('./Commands/').filter(file => file.endsWith('.js'));
-for(const file of Commandsfiles){
-    const command = require(`./Commands/${file}`);
-    client.commands.set(command.name, command);
-fs.readdir(__dirname + "/commands/Help", (err, files) => {
-      if (err) return console.error(err);
-      files.forEach(file => {
-        if (!file.endsWith(".js")) return;
-        let props = require(`./commands/Help/${file}`);
-        let commandName = file.split(".")[0];
-        client.commands.set(commandName, props);
-        console.log("Loading Command: "+commandName)
-      });
-  }); 
-fs.readdir(__dirname + "/commands/Info", (err, files) => {
-      if (err) return console.error(err);
-      files.forEach(file => {
-        if (!file.endsWith(".js")) return;
-        let props = require(`./commands/Info/${file}`);
-        let commandName = file.split(".")[0];
-        client.commands.set(commandName, props);
-        console.log("Loading Command: "+commandName)
-      });
-  }); 
-fs.readdir(__dirname + "/commands/Moderation", (err, files) => {
-      if (err) return console.error(err);
-      files.forEach(file => {
-        if (!file.endsWith(".js")) return;
-        let props = require(`./commands/Moderation/${file}`);
-        let commandName = file.split(".")[0];
-        client.commands.set(commandName, props);
-        console.log("Loading Command: "+commandName)
-      });
-  }); 
-  fs.readdir(__dirname + "/commands/Utilities", (err, files) => {
-    if (err) return console.error(err);
-    files.forEach(file => {
-      if (!file.endsWith(".js")) return;
-      let props = require(`./commands/Utilities/${file}`);
-      let commandName = file.split(".")[0];
-      client.commands.set(commandName, props);
-      console.log("Loading Command: "+commandName)
-    });
-}); 
-fs.readdir(__dirname + "/commands/Games", (err, files) => {
-  if (err) return console.error(err);
-  files.forEach(file => {
-    if (!file.endsWith(".js")) return;
-    let props = require(`./commands/Games/${file}`);
-    let commandName = file.split(".")[0];
-    client.commands.set(commandName, props);
-    console.log("Loading Command: "+commandName)
-  });
-}); 
-fs.readdir(__dirname + "/commands/Economy", (err, files) => {
-  if (err) return console.error(err);
-  files.forEach(file => {
-    if (!file.endsWith(".js")) return;
-    let props = require(`./commands/Economy/${file}`);
-    let commandName = file.split(".")[0];
-    client.commands.set(commandName, props);
-    console.log("Loading Command: "+commandName)
-  });
-}); 
-client.once('ready', () => {
-    console.log('Bot Online Kiddo');
-});
+client.aliases = new Discord.Collection();
+client.categories = fs.readdirSync('./Commands/')
 // bot activity
 client.on('ready', () => {
- console.log(`${client.user.tag} is ready`);
- setInterval(() => {
-  bot.user.setActivity(`f!help | in ${client.guilds.cache.size} servers.`, {type: 'WATCHING'});
-}, 60000);
+  console.log(`${client.user.tag} is ready`);
+  client.user.setActivity(`f!help | in ${client.guilds.cache.size} servers`, {type:"WATCHING"})
+});
+
+
+let ascii = require("ascii-table")
+let table = new ascii("Commands")
+table.setHeading("Command", "Load Status");
+fs.readdirSync("./Commands/").forEach(dir => {
+   let commands = fs.readdirSync(`./Commands/${dir}/`).filter(file => file.endsWith(".js"));
+   for(let file of commands){
+     let pull = require(`./Commands/${dir}/${file}`);
+     if(pull.name) {
+       table.addRow(file, "FINE")
+       client.commands.set(pull.name, pull)
+     }
+     else{
+       table.addRow(file, "Not Fine - Missing name or it is not a string");
+       continue;
+     }
+     if(pull.aliases && Array.isArray(pull.aliases)) pull.aliases.forEach(alias => client.aliases.set(alias, pull.name));
+   }
 
 })
-client.on('message', message => {
-    if (message.content.startsWith(prefix) || message.author.bot) return;
-    const args = message.content.slice(prefix.length).split(/ */)
-    const commandName = args.shift().toLowerCase();
-const command = client.commands.get(commandName);
-if(!command) return;
-command.execute(message, args);
-})};
+console.log(table.toString())
+client.on('message', async message => {
+  if(message.author.bot) return;
+  if(!message.content.startsWith(prefix)) return;
+  if(!message.guild) return;
+  let args = message.content.slice(prefix.length).trim().split(' ')
+  let cmd = args.shift().toLowerCase()
+  let command = client.commands.get(cmd)
+  if(!command) command = client.commands.get(client.aliases.get(cmd));
+  if(command) command.run(client, message, args) 
+})
+
 client.login(token);
